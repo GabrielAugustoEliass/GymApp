@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_unnecessary_containers, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_is_empty, void_checks
 
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,6 +15,7 @@ class _LearnFirebaseState extends State<LearnFirebase> {
   List<String> listString = ['Nenhum Registro inicializado!'];
   final url =
       Uri.https('gym-app-372bf-default-rtdb.firebaseio.com', '/words.json');
+  bool isLoading = false;
 
   final TextEditingController controller = TextEditingController();
 
@@ -26,23 +26,25 @@ class _LearnFirebaseState extends State<LearnFirebase> {
         padding: const EdgeInsets.all(16.0),
         child: Container(
           child: Center(
-            child: RefreshIndicator(
-              onRefresh: getInformations,
-              child: ListView(
-                children: [
-                  TextField(
-                    controller: controller,
-                    decoration:
-                        InputDecoration(labelText: 'Insira uma palavra aqui:'),
+            child: (isLoading)
+                ? CircularProgressIndicator()
+                : RefreshIndicator(
+                    onRefresh: getInformations,
+                    child: ListView(
+                      children: [
+                        TextField(
+                          controller: controller,
+                          decoration: InputDecoration(
+                              labelText: 'Insira uma palavra aqui:'),
+                        ),
+                        ElevatedButton(
+                          onPressed: _addStringToBack,
+                          child: Text('Gravar no Firebase'),
+                        ),
+                        for (String s in listString) Text(s),
+                      ],
+                    ),
                   ),
-                  ElevatedButton(
-                    onPressed: _addStringToBack,
-                    child: Text('Gravar no Firebase'),
-                  ),
-                  for (String s in listString) Text(s),
-                ],
-              ),
-            ),
           ),
         ),
       ),
@@ -62,6 +64,9 @@ class _LearnFirebaseState extends State<LearnFirebase> {
   }
 
   _addStringToBack() {
+    setState(() {
+      isLoading = true;
+    });
     http
         .post(
       url,
@@ -70,7 +75,11 @@ class _LearnFirebaseState extends State<LearnFirebase> {
       ),
     )
         .then((value) {
-      getInformations().then((value) {});
+      getInformations().then((value) {
+        setState(() {
+          isLoading = false;
+        });
+      });
     });
   }
 }

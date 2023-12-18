@@ -12,11 +12,27 @@ import '../../../shared/model/login_model.dart';
 import '../../../shared/constants/gym_colors/gym_colors.dart';
 import '../widgets/text_field_login_widget.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController controllerEmail = TextEditingController();
+
   final TextEditingController controllerSenha = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+
+  bool showPassword = true;
+
+  void isShowPassword() {
+    setState(() {
+      showPassword = !showPassword;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,61 +51,98 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: 80),
-              Image.asset(
-                'assets/dumbbell.png',
-                height: 140,
-              ),
-              TextFieldWidget(
-                nome: 'E-mail',
-                icon: Icons.email,
-                controller: controllerEmail,
-              ),
-              TextFieldWidget(
-                nome: 'Senha',
-                icon: Icons.vpn_key,
-                controller: controllerSenha,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Text(
-                  'Esqueceu a senha?',
-                  style: TextStyle(color: GymColors.white, fontSize: 15),
-                  textAlign: TextAlign.right,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(height: 80),
+                Image.asset(
+                  'assets/dumbbell.png',
+                  height: 140,
                 ),
-              ),
-              ElevatedWidget(
-                nome: 'Login',
-                backgroundColor: GymColors.roxo,
-                onTap: () {},
-              ),
-              SizedBox(height: 7),
-              Padding(
-                padding: const EdgeInsets.only(top: 7, bottom: 7),
-                child: Divider(
-                  thickness: 0.5,
-                  color: Colors.black,
+                TextFieldWidget(
+                  validar: (value) {
+                    if (value.length < 4) {
+                      return 'E-mail curto demais';
+                    } else if (!value.contains("@")) {
+                      return 'O e-mail deve contér @';
+                    } else {
+                      return null;
+                    }
+                  },
+                  nome: 'E-mail',
+                  iconPrefixIcon: Icons.email,
+                  controller: controllerEmail,
+                  isObscureText: true,
                 ),
-              ),
-              Text(
-                'Ainda não tem uma conta?',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 15),
-              ),
-              SizedBox(height: 5),
-              ElevatedWidget(
-                nome: 'Cadastre-se',
-                colorNome: Colors.black,
-                backgroundColor: GymColors.white,
-                onTap: () {
-                  Get.to(CadastroPage());
-                },
-              ),
-            ],
+                TextFieldWidget(
+                  iconSuffixIcon: IconButton(
+                    onPressed: () {
+                      isShowPassword();
+                    },
+                    icon: Icon(
+                      showPassword ? Icons.visibility_off : Icons.visibility,
+                      color: GymColors.white,
+                    ),
+                  ),
+                  validar: (value) {
+                    if (value.length < 4) {
+                      return 'A senha deve contér no minimo 6 digitos';
+                    }
+                    return null;
+                  },
+                  nome: 'Senha',
+                  iconPrefixIcon: Icons.vpn_key,
+                  controller: controllerSenha,
+                  isObscureText: showPassword,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    'Esqueceu a senha?',
+                    style: TextStyle(color: GymColors.white, fontSize: 15),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+                ElevatedWidget(
+                  nome: 'Login',
+                  colorText: GymColors.white,
+                  backgroundColor: GymColors.roxo,
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      print('Válidado');
+                    } else {
+                      print('Não válido');
+                      return;
+                    }
+                  },
+                ),
+                SizedBox(height: 7),
+                Padding(
+                  padding: const EdgeInsets.only(top: 7, bottom: 7),
+                  child: Divider(
+                    thickness: 0.5,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  'Ainda não tem uma conta?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15),
+                ),
+                SizedBox(height: 5),
+                ElevatedWidget(
+                  nome: 'Cadastre-se',
+                  colorText: Colors.black,
+                  backgroundColor: GymColors.white,
+                  onTap: () {
+                    Get.to(CadastroPage());
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

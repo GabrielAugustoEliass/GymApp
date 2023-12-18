@@ -1,14 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gym_app/shared/constants/gym_colors/gym_colors.dart';
 import 'package:gym_app/views/cadastro/widgets/text_field_cadastro_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:gym_app/views/cadastro/service/sing_up_service.dart';
 import '../../../shared/constants/gym_background_color_padrao/gym_background_color_padrao.dart';
-import '../../../shared/model/login_model.dart';
-import '../../../shared/constants/preferences_keys/preferences_key.dart';
 
 // ignore: must_be_immutable
 class CadastroPage extends StatefulWidget {
@@ -111,7 +108,9 @@ class _CadastroPageState extends State<CadastroPage> {
                     backgroundColor: GymColors.white,
                   ),
                   onPressed: () {
-                    _cadastrar();
+                    SingUpService()
+                        .singUp(controllerEmail.text, controllerSenha.text);
+                    // _cadastrar();
                     Get.back();
                   },
                   child: Text(
@@ -129,18 +128,18 @@ class _CadastroPageState extends State<CadastroPage> {
     );
   }
 
-  void _cadastrar() {
-    LoginModel userModel = LoginModel(
-      name: controllerNome.text,
-      email: controllerEmail.text,
-      senha: controllerSenha.text,
-      keppOn: true,
-    );
-    _saveUser(userModel);
-  }
+  // void _cadastrar() {
+  //   LoginModel userModel = LoginModel(
+  //     name: controllerNome.text,
+  //     email: controllerEmail.text,
+  //     senha: controllerSenha.text,
+  //     keppOn: true,
+  //   );
+  //   _saveUser(userModel);
+  // }
 
-  void _saveUser(LoginModel userModel) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(PreferencesKey.key, jsonEncode(userModel.toJson()));
-  }
+  // void _saveUser(LoginModel userModel) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString(PreferencesKey.key, jsonEncode(userModel.toJson()));
+  // }
 }

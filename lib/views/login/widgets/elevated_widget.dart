@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 class ElevatedWidget extends StatelessWidget {
   final String nome;
-  final Color? colorNome;
+  final Color? colorText;
   final Color? backgroundColor;
   final Function() onTap;
   const ElevatedWidget(
       {super.key,
       required this.nome,
-      this.colorNome,
+      this.colorText,
       this.backgroundColor,
       required this.onTap});
 
@@ -28,7 +28,7 @@ class ElevatedWidget extends StatelessWidget {
       onPressed: onTap,
       child: Text(
         nome,
-        style: TextStyle(color: colorNome),
+        style: TextStyle(color: colorText),
       ),
     );
   }
